@@ -1,0 +1,22 @@
+    Windows Registry Editor Version 5.00
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run]
+    "Windows Defender"=-
+    "SecurityHealth"=-
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Run]
+    "WindowsDefender"=-
+    "SecurityHealth"=-
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\exefile\shell\open]
+    "NoSmartScreen"=""
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\exefile\shell\runas]
+    "NoSmartScreen"=""
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\exefile\shell\runasuser]
+    "NoSmartScreen"=""
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\SmartScreen.exe]
+    "Debugger"="systray.exe"
+    

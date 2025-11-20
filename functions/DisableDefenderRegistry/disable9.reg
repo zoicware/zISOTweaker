@@ -1,0 +1,20 @@
+    Windows Registry Editor Version 5.00
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Policies\Microsoft\Windows Defender\Signature Updates]
+    "SignatureDisableNotification"=dword:00000001
+    "RealtimeSignatureDelivery"=dword:00000000
+    "ForceUpdateFromMU"=dword:00000000
+    "DisableScheduledSignatureUpdateOnBattery"=dword:00000001
+    "UpdateOnStartUp"=dword:00000000
+    "SignatureUpdateCatchupInterval"=dword:00000002
+    "DisableUpdateOnStartupWithoutEngine"=dword:00000001
+    "ScheduleTime"=dword:00001440
+    "DisableScanOnUpdate"=dword:00000001
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\System]
+    "EnableSmartScreen"=dword:00000000
+    
+    [HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Policies\Microsoft\Windows Defender\SmartScreen]
+    "ConfigureAppInstallControlEnabled"=dword:00000001
+    "ConfigureAppInstallControl"="Anywhere"
+    

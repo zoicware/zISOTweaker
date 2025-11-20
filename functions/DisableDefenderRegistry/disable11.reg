@@ -1,0 +1,25 @@
+    Windows Registry Editor Version 5.00
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\CLSID\{a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d}]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\WOW6432Node\CLSID\{a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d}]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\WOW6432Node\Classes\CLSID\{a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d}]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\CLSID\{E48B2549-D510-4A76-8A5F-FC126A6215F0}]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\WOW6432Node\CLSID\{E48B2549-D510-4A76-8A5F-FC126A6215F0}]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Service.UserSessionServiceManager]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.ThreatExperienceManager.ThreatExperienceManager]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.ThreatResponseEngine.ThreatDecisionEngine]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Configuration.WTDUserSettings]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\CLSID\{a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d}]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Classes\WOW6432Node\CLSID\{a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d}]
+    
+    [-HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\WOW6432Node\Classes\CLSID\{a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d}]

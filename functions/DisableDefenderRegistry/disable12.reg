@@ -1,0 +1,85 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows Defender Security Center\Systray]
+"HideSystray"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows Defender\Features]
+"TamperProtection"=dword:00000000
+"TamperProtectionSource"=dword:00000002
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows Defender\Signature Updates]
+"FirstAuGracePeriod"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows Defender\UX Configuration]
+"DisablePrivacyMode"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Policies\Microsoft\MRT]
+"DontOfferThroughWUAU"=dword:00000001
+"DontReportInfectionInformation"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection]
+"DisableRoutinelyTakingAction"=dword:00000001
+"DisableScriptScanning"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Policies\Microsoft\Windows Defender\Scan]
+"DisableRemovableDriveScanning"=dword:00000001
+"DisableScanningMappedNetworkDrivesForFullScan"=dword:00000001
+"ScanParameters"=dword:00000000
+"ScheduleDay"=dword:00000008
+"ScheduleTime"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Policies\Microsoft\Windows Defender\Signature Updates]
+"ScheduleDay"=dword:00000008
+"ScheduleTime"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SYSTEM\ControlSet001\Services\Microsoft-Antimalware-ShieldProvider]
+"Start"=dword:00000004
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SYSTEM\ControlSet001\Services\Sense]
+"Start"=dword:00000004
+
+[HKEY_LOCAL_MACHINE\OFFLINE_DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost]
+"EnableWebContentEvaluation"=dword:00000000
+"PreventOverride"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_DEFAULT\SOFTWARE\Policies\Microsoft\Edge]
+"SmartScreenEnabled"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_NTUSER\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost]
+"EnableWebContentEvaluation"=dword:00000000
+"PreventOverride"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_NTUSER\SOFTWARE\Policies\Microsoft\Edge]
+"SmartScreenEnabled"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows Security Health\State]
+"AppAndBrowser_StoreAppsSmartScreenOff"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost]
+"SmartScreenEnabled"="Off"
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer]
+"SmartScreenEnabled"="Off"
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components]
+"CaptureThreatWindow"=dword:00000000
+"NotifyMalicious"=dword:00000000
+"NotifyPasswordReuse"=dword:00000000
+"NotifyUnsafeApp"=dword:00000000
+"ServiceEnabled"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows Defender]
+"VerifiedAndReputableTrustModeEnabled"=dword:00000000
+"SmartLockerMode"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access]
+"EnableControlledFolderAccess"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Edge\SmartScreenEnabled]
+@=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Edge\SmartScreenPuaEnabled]
+@=dword:00000000
+
+[HKEY_LOCAL_MACHINE\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer]
+"SettingsPageVisibility"="hide:windowsdefender;"
