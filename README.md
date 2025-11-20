@@ -5,8 +5,10 @@ Create your own custom Windows 11 ISO using PowerShell!
 - First download or clone the repository, for most users simply click the green `Code` button on the top right and select `Download ZIP`, extract the files and run `Run-ISOTweaker.cmd` as Administrator
 - Download an ISO file to modify, you can either download the latest 25H2 release ISO from [Massgrave](https://massgrave.dev/windows_11_links) or [UUP Dump](https://uupdump.net/)
   - When using the above options provided by the script the Massgrave ISO will include all the default editions, when using UUP dump option you can choose 23H2,24H2, or 25H2 all using Enterprise Edition
-  > [!NOTE]
+  >[!TIP]
+  > 
   > I recommend using Enterprise as this ensures all Group Policy tweaks work properly
+  > 
   >
 - After selecting the edition you want to use, simply choose the tweaks and wait for the script to create your custom ISO
 
