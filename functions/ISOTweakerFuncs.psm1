@@ -1183,6 +1183,51 @@ function Disable-Telemetry {
 }
 Export-ModuleMember -Function Disable-Telemetry
 
+
+function Create-UnmountScript {
+    param(
+        [string]$outDir
+    )
+
+    $fullPath = "$outDir\Reset-ISOMount.cmd"
+
+    $scriptContent = @"
+@(set "0=%~f0"^)#) & powershell -nop -ExecutionPolicy Bypass -c "Unblock-File `$env:0; iex([io.file]::ReadAllText(`$env:0))" & exit /b
+
+Write-Host 'Unloading Registry if its still loaded'
+[GC]::Collect()
+reg unload HKLM\OFFLINE_SOFTWARE >`$null
+reg unload HKLM\OFFLINE_SYSTEM >`$null
+reg unload HKLM\OFFLINE_NTUSER >`$null
+reg unload HKLM\OFFLINE_DEFAULT >`$null
+reg unload HKLM\OFFLINE_COMPONENTS >`$null
+
+Write-Host 'Unmounting Image'
+dism /english /unmount-image /mountdir:"$outDir\RemoveDir" /discard
+
+Write-Host 'Removing Folders'
+Remove-Item "$outDir\RemoveDir" -Recurse -Force
+Remove-Item "$outDir\TEMP" -Recurse -Force
+
+pause
+
+"@
+    
+
+    Write-Status "Creating Reset ISO Mount Script in [$outDir]" -Type Output
+    Write-Status 'Use this script if zISO Tweaker FAILS' -Type Warning
+    try {
+        Remove-Item $fullPath -Force -ErrorAction SilentlyContinue
+    }
+    catch {}
+
+    $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+    [System.IO.File]::WriteAllLines($fullPath, $scriptContent, $Utf8NoBomEncoding)
+    
+    
+}
+Export-ModuleMember -Function Create-UnmountScript
+
 function Create-Unattend {
     param (
         [string]$Username,
@@ -1578,7 +1623,9 @@ function Mount-Edition {
     if ($explorerCount -ne 0) {
         [System.Windows.Forms.MessageBox]::Show('Please Make Sure File Explorer is Closed While Tweaking the ISO File.', 'zISO Tweaker', [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
     }
+    $outDir = Split-Path $workingDir -Parent
 
+    Create-UnmountScript -outDir $outDir
     Write-Status -Message "Mounting Edition: $edition" -Type Output 
     Mount-WindowsImage -ImagePath $imagePath -Index $index -Path $workingDir | Out-Null
 
@@ -2282,6 +2329,15 @@ function Display-UI {
 
                 # Create a temporary directory to copy the ISO contents
                 $Global:tempDir = "$workingDir\TEMP"
+                try {
+                    Remove-Item $Global:tempDir -Recurse -Force -ErrorAction SilentlyContinue
+                }
+                catch {}
+                try {
+                    Remove-Item "$workingDir\RemoveDir" -Recurse -Force -ErrorAction SilentlyContinue
+                }
+                catch {}
+            
                 New-Item -ItemType Directory -Force -Path $tempDir
                 New-Item -Path $workingDir -Name 'RemoveDir' -ItemType Directory -Force
 

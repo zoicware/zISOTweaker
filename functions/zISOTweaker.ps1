@@ -46,6 +46,8 @@ if ($Global:config.Count -gt 0) {
     if (!(Get-WindowsImage -Mounted)) {
         Mount-Edition -ImagePath "$($info.tempDir)\sources\install.wim" -workingDir $info.removeDir -index $info.editionIndex -edition $info.edition
     }
+    #ensure this is created even tho it should already exist
+    Create-UnmountScript -outDir $info.outDir
     Create-Unattend -Username $info.username -Password $info.password -workingDir $info.removeDir -skipOOBE $info.SkipOOBE
     Create-FirstRun -removeDir $info.removeDir
     install-zoicware -removeDir $info.removeDir
