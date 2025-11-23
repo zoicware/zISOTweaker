@@ -12,6 +12,9 @@ Create your own custom Windows 11 ISO using PowerShell!
 >
 - After selecting the edition you want to use, simply choose the tweaks and wait for the script to create your custom ISO
 
+### Video Guide:
+https://youtu.be/Us8LbeQwOfc
+
 ## Tweaks Applied By Default
 - Some tweaks are applied to the ISO for everyone and do not have an option to select them:
   - Disable Windows 11 Install Requirements
