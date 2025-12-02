@@ -2502,14 +2502,33 @@ function Display-UI {
     # === 4. Windows Update Options ===
     $updateGroup = New-StyledGroupBox -Header '4. Windows Update Options'
     $updateStack = New-Object System.Windows.Controls.StackPanel
-    
+
     $disableUpdates = New-StyledCheckBox -Content 'Disable all Windows updates'
     $securityOnly = New-StyledCheckBox -Content 'Security updates only'
     $disableVersionUpgrade = New-StyledCheckBox -Content 'Disable version upgrades'
+    # prevent other update options from being checked when disable all updates is checked for some reason this breaks the script 
+    $disableUpdates.Add_Checked({
+            $securityOnly.IsChecked = $false
+            $securityOnly.IsEnabled = $false
+            $disableVersionUpgrade.IsChecked = $false
+            $disableVersionUpgrade.IsEnabled = $false
+        })
+
+    $disableUpdates.Add_Unchecked({
+            $securityOnly.IsEnabled = $true
+            $disableVersionUpgrade.IsEnabled = $true
+        })
+
+    $securityOnly.Add_Checked({
+            if ($disableUpdates.IsChecked) {
+                $disableUpdates.IsChecked = $false
+            }
+        })
+
     $updateStack.AddChild($disableUpdates)
     $updateStack.AddChild($securityOnly)
     $updateStack.AddChild($disableVersionUpgrade)
-    
+
     $updateGroup.Content = $updateStack
     $mainStack.AddChild($updateGroup)
     
