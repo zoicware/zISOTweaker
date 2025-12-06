@@ -554,11 +554,11 @@ function Disable-Updates {
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\WindowsStore' /v 'AutoDownload' /t REG_DWORD /d '2' /f >$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE' /v 'DisableOnline' /t REG_DWORD /d '1' /f >$null
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Services\wuauserv' /v 'Start' /t REG_DWORD /d '4' /f >$null
-    Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Services\WaaSMedicSVC' /v 'Start' /t REG_DWORD /d '4' /f  >$null
-    Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\Device Metadata' /v 'PreventDeviceMetadataFromNetwork' /t REG_DWORD /d '1' /f  >$null
-    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontPromptForWindowsUpdate' /t REG_DWORD /d '1' >$null
-    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontSearchWindowsUpdate' /t REG_DWORD /d '1' >$null
-    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DriverUpdateWizardWuSearchEnabled' /t REG_DWORD /d '0' >$null
+    Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Services\WaaSMedicSVC' /v 'Start' /t REG_DWORD /d '4' /f >$null
+    Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\Device Metadata' /v 'PreventDeviceMetadataFromNetwork' /t REG_DWORD /d '1' /f >$null
+    Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontPromptForWindowsUpdate' /t REG_DWORD /d '1' /f >$null
+    Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontSearchWindowsUpdate' /t REG_DWORD /d '1' /f >$null
+    Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DriverUpdateWizardWuSearchEnabled' /t REG_DWORD /d '0' /f >$null
 
     # Reg.exe add 'HKU\S-1-5-20\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Settings' /v 'DownloadMode' /t REG_DWORD /d '0' /f
 }
@@ -575,10 +575,10 @@ function Sec-UpdatesOnly {
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate' /v 'DeferQualityUpdatesPeriodInDays' /t REG_DWORD /d '730' /f >$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate' /v 'ExcludeWUDriversInQualityUpdate' /t REG_DWORD /d '1' /f >$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\WindowsUpdate\UX\Settings' /v 'ExcludeWUDriversInQualityUpdate' /t REG_DWORD /d '1' /f >$null
-    Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\Device Metadata' /v 'PreventDeviceMetadataFromNetwork' /t REG_DWORD /d '1' /f  >$null
-    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontPromptForWindowsUpdate' /t REG_DWORD /d '1' >$null
-    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontSearchWindowsUpdate' /t REG_DWORD /d '1' >$null
-    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DriverUpdateWizardWuSearchEnabled' /t REG_DWORD /d '0' >$null
+    Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\Device Metadata' /v 'PreventDeviceMetadataFromNetwork' /t REG_DWORD /d '1' /f >$null
+    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontPromptForWindowsUpdate' /t REG_DWORD /d '1' /f >$null
+    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DontSearchWindowsUpdate' /t REG_DWORD /d '1' /f >$null
+    Reg.exe add  'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\DriverSearching' /v 'DriverUpdateWizardWuSearchEnabled' /t REG_DWORD /d '0' /f >$null
 
     $excludedClassifications = @(
         '{e6cf1350-c01b-414d-a61f-263d3d4dd9f9}', # Critical Updates
@@ -624,7 +624,7 @@ function Disable-WindowsAnnoyances {
     reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'FeatureManagementEnabled' /t REG_DWORD /d '0' /f >$null
     reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'PreInstalledAppsEverEnabled' /t REG_DWORD /d '0' /f >$null
     reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'SoftLandingEnabled' /t REG_DWORD /d '0' /f >$null
-    reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'SubscribedContentEnabled' /t REG_DWORD /d '0' >$null
+    reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'SubscribedContentEnabled' /t REG_DWORD /d '0' /f >$null
     reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'SubscribedContent-310093Enabled' /t REG_DWORD /d '0' /f >$null
     reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'SubscribedContent-338388Enabled' /t REG_DWORD /d '0' /f >$null
     reg.exe add 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' /v 'SubscribedContent-338389Enabled' /t REG_DWORD /d '0' /f >$null
@@ -637,7 +637,7 @@ function Disable-WindowsAnnoyances {
     reg.exe delete 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\Subscriptions' /f *>$null
     reg.exe delete 'HKLM\OFFLINE_NTUSER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SuggestedApps' /f *>$null
     reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\CloudContent' /v 'DisableConsumerAccountStateContent' /t REG_DWORD /d '1' /f >$null
-    reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\CloudContent' /v 'DisableCloudOptimizedContent' /t REG_DWORD /d '1' >$null
+    reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\CloudContent' /v 'DisableCloudOptimizedContent' /t REG_DWORD /d '1' /f >$null
     reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\PolicyManager\default\NewsAndInterests\AllowNewsAndInterests' /v 'value' /t REG_DWORD /d '0' /f >$null
     reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Dsh' /v 'AllowNewsAndInterests' /t REG_DWORD /d '0' /f >$null
     Reg.exe delete 'HKLM\OFFLINE_Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}' /f >$null
@@ -743,11 +743,11 @@ Export-ModuleMember -Function Load-Registry
 function Unload-Registry {
     Write-Status 'Unloading Registry...' -Type Output
     [GC]::Collect()
-    reg unload HKLM\OFFLINE_SOFTWARE >$null
-    reg unload HKLM\OFFLINE_SYSTEM >$null
-    reg unload HKLM\OFFLINE_NTUSER >$null
-    reg unload HKLM\OFFLINE_DEFAULT >$null
-    reg unload HKLM\OFFLINE_COMPONENTS >$null
+    reg unload HKLM\OFFLINE_SOFTWARE *>$null
+    reg unload HKLM\OFFLINE_SYSTEM *>$null
+    reg unload HKLM\OFFLINE_NTUSER *>$null
+    reg unload HKLM\OFFLINE_DEFAULT *>$null
+    reg unload HKLM\OFFLINE_COMPONENTS *>$null
 }
 Export-ModuleMember -Function Unload-Registry
 
@@ -1070,6 +1070,39 @@ function Strip-WinAI {
 
 }
 Export-ModuleMember -Function Strip-WinAI
+
+
+function Integrate-Net3 {
+    param(
+        [string]$removeDir,
+        [string]$tempDir
+    )
+
+    Write-Status 'Getting NetFx 3.5 Status...' Output
+    try {
+        $netfxState = (Get-WindowsOptionalFeature -Path $removeDir -FeatureName netfx3 -ErrorAction Stop).State
+    }
+    catch {
+        #fall back to dism
+        $netfxState = ((dism /english /image:$removeDir /Get-FeatureInfo /FeatureName:NetFx3 | Select-String 'State :') -split ':')[1].trim()
+    }
+   
+    if ($netfxState -ne 'EnablePending') {
+        Write-Status 'Enabling NetFx 3.5...' Output
+        try {
+            Enable-WindowsOptionalFeature -Path $removeDir -FeatureName NetFX3 -All -LimitAccess -Source "$tempDir\sources\sxs" -ErrorAction Stop
+        }
+        catch {
+            dism /Image:$removeDir /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:"$tempDir\sources\sxs"
+        }
+    }
+    else {
+        Write-Status 'NetFx 3.5 Already Enabled on ISO File...' Output
+    }
+    
+
+}
+Export-ModuleMember -Function Integrate-Net3
 
 
 function Disable-Telemetry {

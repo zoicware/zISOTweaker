@@ -56,25 +56,27 @@ if ($Global:config.Count -gt 0) {
     #do some tweaks to all installs 
     Disable-W11Req
     Disable-WindowsAnnoyances -removeDir $info.removeDir
+    Unload-Registry
+    Integrate-Net3 -removeDir $info.removeDir -tempDir $info.tempDir
 
     
     if ($Global:SelectedAppxPackages.Count -ne 0) {
-        Unload-Registry
+        #  Unload-Registry
         Remove-Packages -removeDir $info.removeDir -packages $Global:SelectedAppxPackages
     }
 
     if ($Global:SelectedFeatures.Count -ne 0) {
-        Unload-Registry
+        #   Unload-Registry
         Remove-Features -removeDir $info.removeDir -featureNames $Global:SelectedFeatures
     }
 
     if ($Global:selectedOSPackages.Count -ne 0) {
-        Unload-Registry
+        #  Unload-Registry
         Remove-OSPackages -removeDir $info.removeDir -osPackages $Global:selectedOSPackages
     }
 
     if ($Global:selectedCapabilities.Count -ne 0) {
-        Unload-Registry
+        # Unload-Registry
         Remove-Capabilities -removeDir $info.removeDir -caps $Global:selectedCapabilities
     }
     
