@@ -1452,7 +1452,7 @@ function Download-ISOMassgrave {
     )
     $uri = 'https://github.com/massgravel/massgrave.dev/blob/main/docs/windows_11_links.md'
 
-    $content = (Invoke-WebRequest -Uri $uri).RawContent
+    $content = (Invoke-WebRequest -Uri $uri -UseBasicParsing).RawContent
     $match = [regex]::Match($content, 'https://software-static\.download\.prss\.microsoft\.com/dbazure/[^\s"]+25h2_ge_release_svc_refresh_CLIENT_CONSUMER_x64FRE_en-us\.iso')
 
     if ($match.Success) {
@@ -1479,7 +1479,7 @@ function install-zoicware {
     $ProgressPreference = 'SilentlyContinue'
     $response = Invoke-RestMethod -Uri $apiUrl -Method Get -Headers $headers -UseBasicParsing -ErrorAction Stop
     $downloadUrl = $response.assets | Where-Object { $_.name -eq 'zoicwareOS.zip' } | Select-Object -ExpandProperty browser_download_url
-    Invoke-WebRequest $downloadUrl -o "$env:TEMP\zoicwareOS.zip"
+    Invoke-WebRequest $downloadUrl -o "$env:TEMP\zoicwareOS.zip" -UseBasicParsing
     Expand-Archive -Path "$env:TEMP\zoicwareOS.zip" -DestinationPath "$env:TEMP\zoicwareOS" -Force
     $desktopDir = "$removeDir\Users\Public\Desktop"
     #New-Item -ItemType Directory -Force -Path $desktopDir | Out-Null

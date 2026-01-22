@@ -54,7 +54,8 @@ function UUP-Dump-GetISO {
                 return Invoke-RestMethod `
                     -Method Get `
                     -Uri "https://api.uupdump.net/$name.php" `
-                    -Body $body
+                    -Body $body `
+                    -UseBasicParsing
             }
             catch {
                 Write-Host "WARN: failed the uup-dump api $name request: $_"
@@ -273,6 +274,7 @@ function UUP-Dump-GetISO {
             -Uri $iso.downloadPackageUrl `
             -Body $downloadPackageBody `
             -OutFile "$buildDirectory.zip" `
+            -UseBasicParsing `
         | Out-Null
         Expand-Archive "$buildDirectory.zip" $buildDirectory
 
