@@ -44,7 +44,12 @@ if ($Global:config.Count -gt 0) {
 
     #setup
     if (!(Get-WindowsImage -Mounted)) {
-        Mount-Edition -ImagePath "$($info.tempDir)\sources\install.wim" -workingDir $info.removeDir -index $info.editionIndex -edition $info.edition
+        if (Test-Path "$($info.tempDir)\sources\install.wim") {
+            Mount-Edition -ImagePath "$($info.tempDir)\sources\install.wim" -workingDir $info.removeDir -index $info.editionIndex -edition $info.edition
+        }
+        else {
+            Mount-Edition -ImagePath "$($info.tempDir)\sources\install.swm" -workingDir $info.removeDir -index $info.editionIndex -edition $info.edition
+        }
     }
     #ensure this is created even tho it should already exist
     Create-UnmountScript -outDir $info.outDir

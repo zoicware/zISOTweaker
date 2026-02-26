@@ -771,6 +771,11 @@ function Compress-ISO {
     )
 
     Write-Status 'Compressing ISO File...' -Type Output
+    if (Test-Path "$tempDir\sources\install*.swm") {
+        Remove-Item "$tempDir\sources\install*.swm"
+        Rename-Item "$tempDir\sources\install2.wim" -NewName 'install.wim' -Force
+    }
+   
     Export-WindowsImage -SourceImagePath "$tempDir\sources\install.wim" -SourceIndex $index -DestinationImagePath "$tempDir\sources\install2.wim" -CompressionType 'max'
     Remove-Item "$tempDir\sources\install.wim"
     Rename-Item "$tempDir\sources\install2.wim" -NewName 'install.wim' -Force
@@ -1660,7 +1665,18 @@ function Mount-Edition {
 
     Create-UnmountScript -outDir $outDir
     Write-Status -Message "Mounting Edition: $edition" -Type Output 
-    Mount-WindowsImage -ImagePath $imagePath -Index $index -Path $workingDir | Out-Null
+    if ($imagePath -like '*.swm') {
+        #we need to export the split windows image into a single install wim first 
+        $splitFilePattern = $(Split-Path $imagePath -Parent) + '\install*.swm'
+        $destination = $(Split-Path $imagePath -Parent) + '\install2.wim'
+        Export-WindowsImage -SourceImagePath $imagePath -SplitImageFilePattern $splitFilePattern -SourceIndex $index -DestinationImagePath $destination -CompressionType 'max'
+
+        Mount-WindowsImage -ImagePath $destination -Index 1 -Path $workingDir | Out-Null
+    }
+    else {
+        Mount-WindowsImage -ImagePath $imagePath -Index $index -Path $workingDir | Out-Null
+    }
+
 
 }
 Export-ModuleMember -Function Mount-Edition
@@ -2389,7 +2405,18 @@ function Display-UI {
                 }
     
                 #get editions
-                $editions = Get-WindowsImage -ImagePath "$tempDir\sources\install.wim"
+                if (Test-Path "$tempDir\sources\install.wim") {
+                    $Global:imagePath = "$tempDir\sources\install.wim"
+
+                }
+                elseif (Test-Path "$tempDir\sources\install.swm") {
+                    $Global:imagePath = "$tempDir\sources\install.swm"
+                }
+                else {
+                    Write-Status -Message 'Install.wim or Install.swm Not Found!' -Type Error
+                }
+                
+                $editions = Get-WindowsImage -ImagePath $imagePath
 
                 $editionTable = @{}
                 foreach ($edition in $editions) {
@@ -2624,7 +2651,7 @@ function Display-UI {
             try {
                 if (!(Get-WindowsImage -Mounted)) {
                     #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath "$tempDir\sources\install.wim" -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
+                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
                 }
 
                 Write-Status 'Getting Appx Packages from ISO...' Output
@@ -2794,7 +2821,7 @@ function Display-UI {
             try {
                 if (!(Get-WindowsImage -Mounted)) {
                     #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath "$tempDir\sources\install.wim" -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
+                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
                 }
 
                 Write-Status 'Getting OS Packages from ISO...' Output
@@ -2978,7 +3005,7 @@ function Display-UI {
             try {
                 if (!(Get-WindowsImage -Mounted)) {
                     #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath "$tempDir\sources\install.wim" -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
+                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
                 }
 
                 Write-Status 'Getting Windows Capabilities from ISO...' Output
@@ -3152,7 +3179,7 @@ function Display-UI {
             try {
                 if (!(Get-WindowsImage -Mounted)) {
                     #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath "$tempDir\sources\install.wim" -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
+                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
                 }
 
           
