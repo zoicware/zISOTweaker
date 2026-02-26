@@ -687,7 +687,8 @@ function Disable-WindowsAnnoyances {
     Remove-ItemForce -path "$removeDir\Program Files\Internet Explorer" 
     Remove-ItemForce -path "$removeDir\Program Files (x86)\Windows Mail" 
     Remove-ItemForce -path "$removeDir\Program Files\Windows Mail" 
-    
+    #setup device region to eu to prevent things like copilot and other telemetry features from being enabled
+    reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Control Panel\DeviceRegion' /v DeviceRegion /t REG_DWORD /d 68 /f >$null
 }
 Export-ModuleMember -Function Disable-WindowsAnnoyances
 
