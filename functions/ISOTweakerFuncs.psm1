@@ -433,7 +433,6 @@ function remove-Defender([String]$edition, [String]$removeDir) {
     Remove-ItemForce -path "$removeDir\Windows\System32\SecurityHealth*"
     Remove-ItemForce -path "$removeDir\Windows\System32\SecurityCenter*"
     Remove-ItemForce -path "$removeDir\Windows\System32\smartscreen.exe" 
-    Remove-ItemForce -path "$removeDir\Windows\System32\CodeIntegrity\CiPolicies\Active\*" 
     Remove-ItemForce -path "$removeDir\Program Files\WindowsApps\Microsoft.SecHealthUI_*"
     
 
