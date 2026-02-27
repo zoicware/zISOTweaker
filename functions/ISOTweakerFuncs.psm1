@@ -757,7 +757,10 @@ function Unmount-ISO {
         [string]$edition
     )
     Write-Status 'Compressing WinSXS Folder...' Output
-    dism /image:$removeDir /Cleanup-Image /StartComponentCleanup /ResetBase
+    dism /image:$removeDir /Cleanup-Image /StartComponentCleanup /ResetBase *>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Status 'Unable to compress WinSXS folder due to pending operations...Skipping' Warning
+    }
 
     Write-Status "Unmounting $edition..." Output
     dism /unmount-image /mountdir:$removeDir /commit
