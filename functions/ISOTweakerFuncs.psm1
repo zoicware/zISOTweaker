@@ -2350,6 +2350,17 @@ function Display-UI {
                 return
             }
 
+            #get-volume fails when ms storage space service is disabled
+            try {
+                $starttype = (Get-Service smphost -ErrorAction Stop).StartType
+                if ($starttype -eq 'Disabled') {
+                    Set-Service smphost -StartupType Manual 
+                }
+            }
+            catch {
+                Write-Status 'Microsoft Storage Spaces service NOT found on the system... this will cause the script to break' -Type Error
+            }
+
             #check output dir drive will have enough space
             $isoSize = (Get-Item -Path "$isoPath").Length
             $driveLetter = (Split-Path $workingDir -Qualifier) -replace ':', ''
