@@ -3400,3 +3400,36 @@ function Display-UI {
 
 }
 Export-ModuleMember -Function Display-UI
+
+function Add-Drivers {
+    param(
+        [string]$mountPath,
+        [string]$driverDir
+    )
+    Write-Status "Adding drivers from [$driverDir]" -Type Output
+    & dism /English "/image:$MountPath" /Add-Driver "/Driver:$DriverDir" /Recurse
+}
+Export-ModuleMember -Function Add-Drivers
+
+function Add-Scripts {
+    param(
+        [string]$removeDir,
+        [string]$userScriptsDir
+    )
+
+    Write-Status 'Adding user scripts to run on first boot...' Output
+ 
+    $scriptsDir = "$removeDir\Windows\scripts"
+    if (!(Test-Path $scriptsDir)) {
+        New-Item $scriptsDir -ItemType Directory -Force | Out-Null
+    }
+    #only powershell scripts for rn
+    $scripts = (Get-ChildItem $userScriptsDir -Recurse -Filter '*.ps1').FullName
+    if ($scripts) {
+        move-item $scripts -Destination $scriptsDir -Force
+    }
+
+    #maybe make a scheduled task or a seperate wrapper script in runonce to run all the scripts in the users dir
+    #also could have an option to run all scripts in parallel or async    
+}
+Export-ModuleMember -Function Add-Scripts
