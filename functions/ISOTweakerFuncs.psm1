@@ -1672,17 +1672,168 @@ function Mount-Edition {
         #we need to export the split windows image into a single install wim first 
         $splitFilePattern = $(Split-Path $imagePath -Parent) + '\install*.swm'
         $destination = $(Split-Path $imagePath -Parent) + '\install2.wim'
-        Export-WindowsImage -SourceImagePath $imagePath -SplitImageFilePattern $splitFilePattern -SourceIndex $index -DestinationImagePath $destination -CompressionType 'max'
+        Export-WindowsImage -SourceImagePath $imagePath -SplitImageFilePattern $splitFilePattern -SourceIndex $index -DestinationImagePath $destination -CompressionType 'max' -ErrorAction Stop
 
-        Mount-WindowsImage -ImagePath $destination -Index 1 -Path $workingDir | Out-Null
+        Mount-WindowsImage -ImagePath $destination -Index 1 -Path $workingDir -ErrorAction Stop | Out-Null
     }
     else {
-        Mount-WindowsImage -ImagePath $imagePath -Index $index -Path $workingDir | Out-Null
+        Mount-WindowsImage -ImagePath $imagePath -Index $index -Path $workingDir -ErrorAction Stop | Out-Null
     }
 
 
 }
 Export-ModuleMember -Function Mount-Edition
+
+function ConvertTo-NormalizedMountPath {
+    param (
+        [Parameter(Mandatory)]
+        [string]$path
+    )
+
+    if ([string]::IsNullOrWhiteSpace($path)) {
+        throw 'Mounted image path cannot be empty.'
+    }
+
+    try {
+        $fullPath = [System.IO.Path]::GetFullPath($path)
+    }
+    catch {
+        throw "Unable to normalize mounted image path [$path]: $($_.Exception.Message)"
+    }
+
+    $rootPath = [System.IO.Path]::GetPathRoot($fullPath)
+    if (![string]::Equals($fullPath, $rootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        $fullPath = $fullPath.TrimEnd([char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar))
+    }
+
+    return $fullPath
+}
+
+function Resolve-MountedImageTarget {
+    param (
+        [Parameter(Mandatory)]
+        [string]$targetPath,
+
+        [Parameter(Mandatory)]
+        [string]$expectedImagePath,
+
+        [Parameter(Mandatory)]
+        $expectedImageIndex,
+
+        [AllowEmptyCollection()]
+        [object[]]$mountedImages
+    )
+
+    $normalizedTargetPath = ConvertTo-NormalizedMountPath -path $targetPath
+    $normalizedExpectedImagePath = ConvertTo-NormalizedMountPath -path $expectedImagePath
+    try {
+        $normalizedExpectedImageIndex = [uint32]$expectedImageIndex
+    }
+    catch {
+        throw "Expected Windows image index is invalid: [$expectedImageIndex]"
+    }
+    if ($normalizedExpectedImageIndex -eq 0) {
+        throw "Expected Windows image index is invalid: [$expectedImageIndex]"
+    }
+
+    $targetImages = @()
+
+    foreach ($mountedImage in @($mountedImages)) {
+        if ($null -eq $mountedImage) {
+            throw 'The mounted Windows image inventory contains an empty entry.'
+        }
+
+        $mountedPath = [string]$mountedImage.Path
+        $normalizedMountedPath = ConvertTo-NormalizedMountPath -path $mountedPath
+
+        if ([string]::Equals($normalizedMountedPath, $normalizedTargetPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $targetImages += $mountedImage
+        }
+    }
+
+    if ($targetImages.Count -gt 1) {
+        throw "Multiple mounted Windows images claim target path [$normalizedTargetPath]."
+    }
+
+    if ($targetImages.Count -eq 0) {
+        return $null
+    }
+
+    $targetImage = $targetImages[0]
+    $mountStatus = [string]$targetImage.MountStatus
+    if (![string]::Equals($mountStatus, 'Ok', [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "The Windows image at target path [$normalizedTargetPath] is not ready (status: [$mountStatus])."
+    }
+
+    $mountMode = [string]$targetImage.MountMode
+    if (![string]::Equals($mountMode, 'ReadWrite', [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "The Windows image at target path [$normalizedTargetPath] is not writable (mode: [$mountMode])."
+    }
+
+    $mountedImagePath = ConvertTo-NormalizedMountPath -path ([string]$targetImage.ImagePath)
+    if (![string]::Equals($mountedImagePath, $normalizedExpectedImagePath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Target path [$normalizedTargetPath] is mounted from unexpected image [$mountedImagePath] instead of [$normalizedExpectedImagePath]."
+    }
+
+    try {
+        $mountedImageIndex = [uint32]$targetImage.ImageIndex
+    }
+    catch {
+        throw "The Windows image at target path [$normalizedTargetPath] has an invalid image index: [$($targetImage.ImageIndex)]"
+    }
+    if ($mountedImageIndex -ne $normalizedExpectedImageIndex) {
+        throw "Target path [$normalizedTargetPath] is mounted at unexpected image index [$mountedImageIndex] instead of [$normalizedExpectedImageIndex]."
+    }
+
+    return $targetImage
+}
+
+function Mount-EditionIfNeeded {
+    param (
+        [string]$imagePath,
+        [string]$workingDir,
+        $index,
+        [string]$edition
+    )
+
+    $normalizedTargetPath = ConvertTo-NormalizedMountPath -path $workingDir
+    if (!(Test-Path -LiteralPath $normalizedTargetPath -PathType Container)) {
+        throw "Mounted image target path does not exist or is not a directory: [$normalizedTargetPath]"
+    }
+
+    $expectedImagePath = $imagePath
+    $expectedImageIndex = $index
+    if ($imagePath -like '*.swm') {
+        #Mount-Edition exports split media to this single-image WIM before mounting it
+        $expectedImagePath = $(Split-Path $imagePath -Parent) + '\install2.wim'
+        $expectedImageIndex = 1
+    }
+
+    try {
+        $mountedImages = @(Get-WindowsImage -Mounted -ErrorAction Stop)
+    }
+    catch {
+        throw "Unable to query mounted Windows images: $($_.Exception.Message)"
+    }
+
+    $targetImage = Resolve-MountedImageTarget -targetPath $normalizedTargetPath -expectedImagePath $expectedImagePath -expectedImageIndex $expectedImageIndex -mountedImages $mountedImages
+    if ($null -eq $targetImage) {
+        Mount-Edition -ImagePath $imagePath -workingDir $normalizedTargetPath -index $index -edition $edition
+
+        try {
+            $mountedImages = @(Get-WindowsImage -Mounted -ErrorAction Stop)
+        }
+        catch {
+            throw "Unable to verify mounted Windows image: $($_.Exception.Message)"
+        }
+
+        $targetImage = Resolve-MountedImageTarget -targetPath $normalizedTargetPath -expectedImagePath $expectedImagePath -expectedImageIndex $expectedImageIndex -mountedImages $mountedImages
+        if ($null -eq $targetImage) {
+            throw "Mounting edition [$edition] did not create a valid mounted image at target path [$normalizedTargetPath]."
+        }
+    }
+}
+Export-ModuleMember -Function Mount-EditionIfNeeded
 
 
 
@@ -2663,10 +2814,8 @@ function Display-UI {
             $selectAppxButton.Content = 'Loading packages...'
     
             try {
-                if (!(Get-WindowsImage -Mounted)) {
-                    #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
-                }
+                #need to mount the edition first to display the packages on the iso
+                Mount-EditionIfNeeded -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
 
                 Write-Status 'Getting Appx Packages from ISO...' Output
                 $packages = Get-AppxProvisionedPackage -Path "$($outputTextBox.Text)\RemoveDir" | Select-Object DisplayName, PackageName | Where-Object { 
@@ -2833,10 +2982,8 @@ function Display-UI {
             $selectOSPackagesButton.Content = 'Loading OS packages...'
     
             try {
-                if (!(Get-WindowsImage -Mounted)) {
-                    #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
-                }
+                #need to mount the edition first to display the packages on the iso
+                Mount-EditionIfNeeded -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
 
                 Write-Status 'Getting OS Packages from ISO...' Output
                 $osPackages = Get-WindowsPackage -Path "$($outputTextBox.Text)\RemoveDir" | Select-Object PackageName, PackageState | Where-Object {
@@ -3017,10 +3164,8 @@ function Display-UI {
             $selectCapabilitiesButton.Content = 'Loading capabilities...'
     
             try {
-                if (!(Get-WindowsImage -Mounted)) {
-                    #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
-                }
+                #need to mount the edition first to display the packages on the iso
+                Mount-EditionIfNeeded -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
 
                 Write-Status 'Getting Windows Capabilities from ISO...' Output
                 $capabilities = Get-WindowsCapability -Path "$($outputTextBox.Text)\RemoveDir" | Select-Object Name, State | Where-Object {
@@ -3191,10 +3336,8 @@ function Display-UI {
             $selectFeaturesButton.Content = 'Loading features...'
     
             try {
-                if (!(Get-WindowsImage -Mounted)) {
-                    #need to mount the edition first to display the packages on the iso
-                    Mount-Edition -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
-                }
+                #need to mount the edition first to display the packages on the iso
+                Mount-EditionIfNeeded -ImagePath $Global:imagePath -workingDir "$($outputTextBox.Text)\RemoveDir" -index ($editionCombo.Tag)[$editionCombo.SelectedItem] -edition $editionCombo.SelectedItem
 
           
                 Write-Status 'Getting Features from ISO...' Output
