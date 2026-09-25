@@ -672,8 +672,11 @@ function Disable-WindowsAnnoyances {
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\PolicyManager\default\Connectivity\DisableCrossDeviceResume' /v 'value' /t REG_DWORD /d '1' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\1387020943' /v 'EnabledState' /t REG_DWORD /d '1' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\1694661260' /v 'EnabledState' /t REG_DWORD /d '1' /f *>$null
-    Write-Status 'Disabling User Choice Driver...' Output
+    Write-Status 'Removing User Choice Driver...' Output
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Services\UCPD' /v 'Start' /t REG_DWORD /d '4' /f >$null
+    Remove-ItemForce -path "$removeDir\Windows\System32\UCPDMgr.exe"
+    Remove-ItemForce -path "$removeDir\Windows\System32\drivers\UCPD.sys"
+    Remove-ItemForce -path "$tasksPath\Microsoft\Windows\AppxDeploymentClient\UCPD velocity"  
     Write-Status 'Disabling AI Fabric Service...' Output
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Services\WSAIFabricSvc' /v 'Start' /t REG_DWORD /d '4' /f >$null
     Write-Status 'Disabling Windows Quality and Health Insights Services...' Output
