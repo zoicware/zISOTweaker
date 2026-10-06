@@ -672,6 +672,9 @@ function Disable-WindowsAnnoyances {
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\PolicyManager\default\Connectivity\DisableCrossDeviceResume' /v 'value' /t REG_DWORD /d '1' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\1387020943' /v 'EnabledState' /t REG_DWORD /d '1' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\1694661260' /v 'EnabledState' /t REG_DWORD /d '1' /f *>$null
+    #reg hack found my melo/revi os to prevent crossdeviceresume from running on start
+    $command = "Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Shell\ShellUIHosts\CrossDeviceResumeHost' /v 'ProcessPath' /t REG_SZ /d '%SystemRoot%\system32\ShellHost.exe' /f"
+    Run-Trusted -command $command
     Write-Status 'Removing User Choice Driver...' Output
     Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Services\UCPD' /v 'Start' /t REG_DWORD /d '4' /f >$null
     Remove-ItemForce -path "$removeDir\Windows\System32\UCPDMgr.exe"
