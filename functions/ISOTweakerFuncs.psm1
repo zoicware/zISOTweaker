@@ -920,9 +920,9 @@ function Strip-WinAI {
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\systemAIModels' /v 'Value' /t REG_SZ /d 'Deny' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\AppPrivacy' /v 'LetAppsAccessGenerativeAI' /t REG_DWORD /d '2'/f *>$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Policies\Microsoft\Windows\AppPrivacy' /v 'LetAppsAccessSystemAIModels' /t REG_DWORD /d '2' /f *>$null
-    Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\1853569164' /v 'EnabledState' /t REG_DWORD /d '1'/f *>$null
-    Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\4098520719' /v 'EnabledState' /t REG_DWORD /d '1' /f *>$null
-    Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\929719951' /v 'EnabledState' /t REG_DWORD /d '1' /f *>$null
+    #fix ai fabric explorer dependency
+    Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\1561856655' /v 'EnabledState' /t REG_DWORD /d '1'/f *>$null
+    Reg.exe add 'HKLM\OFFLINE_SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\940684430' /v 'EnabledState' /t REG_DWORD /d '1' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Paint' /v 'DisableImageCreator' /t REG_DWORD /d '1' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Paint' /v 'DisableCocreator' /t REG_DWORD /d '1' /f *>$null
     Reg.exe add 'HKLM\OFFLINE_SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Paint' /v 'DisableGenerativeFill' /t REG_DWORD /d '1' /f *>$null
@@ -950,12 +950,12 @@ function Strip-WinAI {
     Unload-Registry
     $ProgressPreference = 'SilentlyContinue'
     try {
-        Invoke-WebRequest -Uri "https://github.com/zoicware/RemoveWindowsAI/raw/refs/heads/main/RemoveWindowsAIPackage/$arch/ZoicwareRemoveWindowsAI-$($arch)1.0.0.0.cab" -OutFile "$env:TEMP\ZoicwareRemoveWindowsAI-$($arch)1.0.0.0.cab" -UseBasicParsing -ErrorAction Stop
+        Invoke-WebRequest -Uri "https://github.com/zoicware/RemoveWindowsAI/raw/refs/heads/main/RemoveWindowsAIPackage/$arch/ZoicwareRemoveWindowsAI-$($arch)1.0.0.1.cab" -OutFile "$env:TEMP\ZoicwareRemoveWindowsAI-$($arch)1.0.0.1.cab" -UseBasicParsing -ErrorAction Stop
         Write-Status 'Installing RemoveWindowsAI Package...' Output
-        Add-WindowsPackage -Path $removeDir -PackagePath "$env:TEMP\ZoicwareRemoveWindowsAI-$($arch)1.0.0.0.cab" -NoRestart -IgnoreCheck
+        Add-WindowsPackage -Path $removeDir -PackagePath "$env:TEMP\ZoicwareRemoveWindowsAI-$($arch)1.0.0.1.cab" -NoRestart -IgnoreCheck
     }
     catch {
-        Write-Status "Unable to Download Package at: https://github.com/zoicware/RemoveWindowsAI/raw/refs/heads/main/RemoveWindowsAIPackage/$arch/ZoicwareRemoveWindowsAI-$($arch)1.0.0.0.cab" Error
+        Write-Status "Unable to Download Package at: https://github.com/zoicware/RemoveWindowsAI/raw/refs/heads/main/RemoveWindowsAIPackage/$arch/ZoicwareRemoveWindowsAI-$($arch)1.0.0.1.cab" Error
         
     }
     
@@ -973,6 +973,7 @@ function Strip-WinAI {
         'Microsoft.Office.ActionsServer'
         'aimgr'
         'Microsoft.WritingAssistant'
+        'Microsoft.AIFabric.CBS'
         #ai component packages installed on copilot+ pcs
         'WindowsWorkload'
         'Voiess'
