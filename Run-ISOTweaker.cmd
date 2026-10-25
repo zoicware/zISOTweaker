@@ -1,7 +1,7 @@
 @(set "0=%~f0"^)#) & chcp 65001 >nul 2>&1 & powershell -nop -ExecutionPolicy Bypass -c "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Unblock-File $env:0; iex([io.file]::ReadAllText($env:0, [System.Text.Encoding]::UTF8))" & exit /b
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Start-Process -FilePath $env:0 -Verb RunAs
+    Start-Process -FilePath "$env:0" -Verb RunAs
     exit
 }
 
