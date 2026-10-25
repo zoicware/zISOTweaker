@@ -1,12 +1,3 @@
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]'Administrator')) {
-    Write-Host 'Please Run this Script as Admin...' -f Red
-    Write-Host 'Right Click Run-ISOTweaker.cmd > Run as Administrator' -f Red
-    Write-Host 'Press Any Key to Exit...'
-    $Host.UI.RawUI.ReadKey() *>$null
-    Exit	
-}
-
-
 $modulePath = "$PSScriptRoot\ISOTweakerFuncs.psm1"
 if (Test-Path $modulePath) {
     Import-Module -Name $modulePath -Force -Global *>$null
